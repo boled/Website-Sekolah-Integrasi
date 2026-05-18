@@ -248,8 +248,8 @@ export default function FacilitiesAdmin() {
         </div>
       )}
 
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-        <table className="w-full text-left border-collapse">
+      <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden overflow-x-auto">
+        <table className="w-full text-left border-collapse min-w-[500px]">
           <thead>
             <tr className="bg-slate-50 border-b border-slate-200">
               <th className="p-4 font-semibold text-slate-600">Nama Fasilitas</th>
@@ -259,8 +259,8 @@ export default function FacilitiesAdmin() {
           <tbody>
             {dataList.map((item) => (
               <tr key={item.ID} className="border-b border-slate-100 last:border-0 hover:bg-slate-50">
-                <td className="p-4 font-medium">{item.Nama}</td>
-                <td className="p-4 text-right space-x-2">
+                <td className="p-4 font-medium whitespace-nowrap">{item.Nama}</td>
+                <td className="p-4 text-right space-x-2 whitespace-nowrap">
                   <button onClick={() => openEdit(item)} className="text-indigo-600 hover:bg-indigo-50 p-2 rounded-lg transition"><Edit2 size={18} /></button>
                   <button onClick={() => handleDelete(item.ID)} className="text-rose-600 hover:bg-rose-50 p-2 rounded-lg transition"><Trash2 size={18} /></button>
                 </td>

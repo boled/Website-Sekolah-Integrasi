@@ -42,24 +42,36 @@ export default function Layout({ settings, seo }: { settings: any, seo?: any[] }
       </Helmet>
       <nav className="bg-white border-b border-slate-200 shadow-sm sticky top-0 z-50 shrink-0">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
-            <div className="flex items-center">
-              <Link to="/" className="flex items-center gap-3">
+          <div className="flex justify-between items-center h-16">
+            <div className="flex items-center flex-1 min-w-0 mr-4">
+              <Link to="/" className="flex items-center gap-3 group min-w-0">
                 {logoUrl ? (
-                  <img src={logoUrl} alt="Logo" className="h-10 w-auto" />
+                  <motion.img 
+                    src={logoUrl} 
+                    alt="Logo" 
+                    className="h-10 w-auto shrink-0" 
+                    whileHover={{ scale: 1.05, rotate: -2 }}
+                    transition={{ type: "spring", stiffness: 300 }}
+                  />
                 ) : (
-                  <div className="w-10 h-10 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-bold text-xl">
+                  <motion.div 
+                    className="w-10 h-10 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-bold text-xl shrink-0"
+                    whileHover={{ scale: 1.05, rotate: -2 }}
+                    transition={{ type: "spring", stiffness: 300 }}
+                  >
                     {schoolName.charAt(0)}
-                  </div>
+                  </motion.div>
                 )}
-                <div>
-                  <h1 className="text-xl font-bold text-slate-800 leading-tight hidden sm:block">
+                <div className="min-w-0 hidden sm:block">
+                  <h1 className="text-lg md:text-xl font-bold text-slate-800 leading-tight truncate">
                     {schoolName}
                   </h1>
-                  <p className="text-[10px] sm:text-xs text-slate-500 font-medium uppercase tracking-wider hidden sm:block">Portal Informasi Akademik</p>
+                  <p className="text-[10px] text-slate-500 font-medium uppercase tracking-wider truncate">
+                    Portal Informasi Akademik
+                  </p>
                 </div>
-                <span className="font-bold text-lg text-slate-800 sm:hidden">
-                  Sistem Sekolah
+                <span className="font-bold text-lg text-slate-800 sm:hidden truncate">
+                  {schoolName}
                 </span>
               </Link>
             </div>
@@ -179,7 +191,9 @@ export default function Layout({ settings, seo }: { settings: any, seo?: any[] }
           </div>
           <div className="mt-8 pt-8 border-t border-slate-800 text-center md:text-left text-sm text-slate-400 flex flex-col md:flex-row justify-between items-center gap-4">
              <p>&copy; {new Date().getFullYear()} {schoolName}. All rights reserved.</p>
-             <p className="text-xs">Powered by Google Workspace Engine</p>
+             <p className="text-xs">
+               Supported by <a href="https://abyfine.com" target="_blank" rel="noopener noreferrer" className="text-indigo-400 hover:underline">Abyfine Intermedia</a>
+             </p>
           </div>
         </div>
       </footer>

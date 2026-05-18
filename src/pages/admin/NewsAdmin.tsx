@@ -132,8 +132,8 @@ export default function NewsAdmin() {
         </div>
       )}
 
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-        <table className="w-full text-left border-collapse">
+      <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden overflow-x-auto">
+        <table className="w-full text-left border-collapse min-w-[600px]">
           <thead>
             <tr className="bg-slate-50 border-b border-slate-200">
               <th className="p-4 font-semibold text-slate-600">Tanggal</th>
@@ -144,9 +144,9 @@ export default function NewsAdmin() {
           <tbody>
             {dataList.map((item) => (
               <tr key={item.ID} className="border-b border-slate-100 last:border-0 hover:bg-slate-50">
-                <td className="p-4 text-slate-500">{new Date(item.Tanggal).toLocaleDateString("id-ID")}</td>
-                <td className="p-4 font-medium">{item.Judul}</td>
-                <td className="p-4 text-right space-x-2">
+                <td className="p-4 text-slate-500 whitespace-nowrap">{new Date(item.Tanggal).toLocaleDateString("id-ID")}</td>
+                <td className="p-4 font-medium min-w-[200px]">{item.Judul}</td>
+                <td className="p-4 text-right space-x-2 whitespace-nowrap">
                   <button onClick={() => openEdit(item)} className="text-indigo-600 hover:bg-indigo-50 p-2 rounded-lg transition"><Edit2 size={18} /></button>
                   <button onClick={() => handleDelete(item.ID)} className="text-rose-600 hover:bg-rose-50 p-2 rounded-lg transition"><Trash2 size={18} /></button>
                 </td>
