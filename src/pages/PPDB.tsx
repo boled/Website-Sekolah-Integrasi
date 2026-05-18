@@ -90,6 +90,20 @@ export default function PPDB() {
         </div>
 
         <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+          <div className="w-full h-48 md:h-64 overflow-hidden relative">
+            <img 
+              src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=1200&q=80" 
+              alt="Pendidikan" 
+              className="w-full h-full object-cover"
+              referrerPolicy="no-referrer"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end">
+               <div className="p-8 w-full">
+                  <span className="bg-indigo-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-2 inline-block">Tahun Ajaran Baru</span>
+                  <h2 className="text-2xl md:text-3xl font-bold text-white">Bergabung Bersama Kami</h2>
+               </div>
+            </div>
+          </div>
           <div className="p-8 sm:p-12">
              
              {status === "success" && (

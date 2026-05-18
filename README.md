@@ -48,6 +48,62 @@ Maka Dashboard siap dikelola!. Mulai tambahkan data dummy dari Menu Admin dan li
 
 ---
 
+## 🚀 Panduan Deployment (Hosting)
+
+Aplikasi ini adalah Single Page Application (SPA) berbasis React dan Vite. Anda bisa meng-hosting-nya dengan mudah di berbagai platform. Sebelum melakukan *build*, pastikan Anda sudah memasukkan `VITE_GAS_API_URL` ke dalam file `.env` produksi di masing-masing platform.
+
+### 1. Cloudflare Pages
+Cara paling cepat dan direkomendasikan untuk performa maksimal:
+1. Login ke [Cloudflare Dashboard](https://dash.cloudflare.com/), masuk ke menu **Workers & Pages**.
+2. Klik **Create application**, lalu pilih tab **Pages**.
+3. Hubungkan akun GitHub Anda dan pilih repositori proyek ini.
+4. Pada bagian **Build settings**:
+   - **Framework preset**: `Vite`
+   - **Build command**: `npm run build`
+   - **Build output directory**: `dist`
+5. Tambahkan `VITE_GAS_API_URL` pada bagian **Environment variables (advanced)**.
+6. Klik **Save and Deploy**. Cloudflare otomatis membuatkan _redirect rule_ fallback untuk SPA jika Anda sudah mengatur di UI. Alternatifnya, Anda dapat menambahkan file `_redirects` di folder `public` yang berisi `/* /index.html 200` agar navigasi internal React Router berfungsi.
+
+### 2. Vercel
+Sangat ramah pengguna dan terintegrasi otomatis untuk React:
+1. Login ke [Vercel](https://vercel.com/) dan klik **Add New...** -> **Project**.
+2. Impor repositori GitHub dari aplikasi ini.
+3. Vercel biasanya otomatis mendeteksi **Vite**. Biarkan pengaturan *Build & Development Settings* secara default.
+4. Tambahkan *Environment Variable*: Nama: `VITE_GAS_API_URL`, Value: _(URL Web App GAS Anda)_.
+5. Buka tab root proyek, pastikan sudah terdapat berkas `vercel.json` (bila diperlukan) yang berisi script routing untuk SPA, fungsinya agar mencegah error *"404 Not Found"* pada React Router.
+   *(Contoh isi `vercel.json` untuk SPA fallbacks)*:
+   ```json
+   {
+     "rewrites": [
+       { "source": "/(.*)", "destination": "/index.html" }
+     ]
+   }
+   ```
+6. Klik **Deploy**.
+
+### 3. Hosting Berbasis cPanel (Shared Hosting)
+Jika Anda menggunakan hosting tradisional cPanel seperti Hostinger, Niagahoster, Rumahweb, dll:
+1. Buka terminal di PC/Laptop Anda, jalankan perintah build *lokal*: `npm run build`. Pastikan `.env.production` atau konfigurasi URL GAS sudah diatur.
+2. Tunggu proses selesai. Anda akan mendapatkan folder baru bernama `dist`.
+3. Kompres/Zipping seluruh isi **di dalam folder** `dist` (ingat: isinya, bukan folder dist-nya) menjadi format `.zip`.
+4. Login ke dasbor **cPanel** hosting Anda.
+5. Masuk ke **File Manager** -> **public_html** (atau sub-domain yang Anda inginkan).
+6. Upload file `.zip` tadi, lalu ekstrak ke dalam `public_html`.
+7. **Penting (React Router Fix):** Karena cPanel menggunakan server Apache, Anda wajib membuat sebuah file bernama `.htaccess` (jangan lupa aktifkan _Show Hidden Files_) di dalam `public_html` dan isikan baris ini agar error *404 Route* pada React App terhindari:
+   ```apache
+   <IfModule mod_rewrite.c>
+     RewriteEngine On
+     RewriteBase /
+     RewriteRule ^index\.html$ - [L]
+     RewriteCond %{REQUEST_FILENAME} !-f
+     RewriteCond %{REQUEST_FILENAME} !-d
+     RewriteRule . /index.html [L]
+   </IfModule>
+   ```
+8. Aplikasi website sekolah Anda sekarang dapat diakses secara publik.
+
+---
+
 ## ✍️ Kredit & Dukungan
 
 Supported by:
