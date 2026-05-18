@@ -1,0 +1,6 @@
+{
+  "name": "Sistem Informasi Sekolah Terpadu",
+  "description": "Website resmi sekolah dengan fitur profil, berita, data guru, fasilitas, dan pendaftaran siswa baru (PPDB) berbasis Google Sheets & Drive.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
