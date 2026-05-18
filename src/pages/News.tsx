@@ -1,5 +1,7 @@
-import { CalendarDays, ArrowLeft, Search, Filter } from "lucide-react";
+import { CalendarDays, ArrowLeft, Search, Filter, ChevronLeft, ChevronRight } from "lucide-react";
 import { useState, useMemo } from "react";
+
+const ITEMS_PER_PAGE = 6;
 
 export default function News({ data }: { data: any }) {
   const news = data?.news || [];
@@ -9,6 +11,9 @@ export default function News({ data }: { data: any }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortOrder, setSortOrder] = useState<"newest" | "oldest">("newest");
   const [selectedCategory, setSelectedCategory] = useState("Semua");
+  
+  // Pagination State
+  const [currentPage, setCurrentPage] = useState(1);
 
   // Extract unique categories (if 'Kategori' exists in data)
   const categories = useMemo(() => {
@@ -52,6 +57,17 @@ export default function News({ data }: { data: any }) {
 
     return filtered;
   }, [news, searchQuery, selectedCategory, sortOrder]);
+
+  // Reset pagination when filters change
+  useMemo(() => {
+    setCurrentPage(1);
+  }, [searchQuery, selectedCategory, sortOrder]);
+
+  const totalPages = Math.ceil(filteredAndSortedNews.length / ITEMS_PER_PAGE);
+  const paginatedNews = useMemo(() => {
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+    return filteredAndSortedNews.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  }, [filteredAndSortedNews, currentPage]);
 
   if (selectedNews) {
     return (
@@ -151,36 +167,73 @@ export default function News({ data }: { data: any }) {
               <p className="text-xl text-slate-500 font-semibold">Berita tidak ditemukan.</p>
            </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredAndSortedNews.map((item: any) => (
-              <div 
-                key={item.ID || Math.random()} 
-                className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden hover:shadow-md transition cursor-pointer flex flex-col group"
-                onClick={() => setSelectedNews(item)}
-              >
-                <div className="aspect-video w-full bg-slate-200 overflow-hidden shrink-0">
-                   {item.GambarURL ? (
-                     <img src={item.GambarURL} alt={item.Judul} className="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
-                   ) : (
-                     <div className="w-full h-full flex items-center justify-center text-slate-400 bg-slate-100">
-                        <span className="text-sm font-semibold uppercase tracking-wider">Tanpa Gambar</span>
-                     </div>
-                   )}
-                </div>
-                <div className="p-6 flex flex-col flex-1">
-                  <div className="flex items-center gap-2 text-xs text-indigo-600 font-bold uppercase tracking-wider mb-3">
-                    <CalendarDays size={14} />
-                    {new Date(item.Tanggal).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' })}
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+              {paginatedNews.map((item: any) => (
+                <div 
+                  key={item.ID || Math.random()} 
+                  className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden hover:shadow-md transition cursor-pointer flex flex-col group"
+                  onClick={() => setSelectedNews(item)}
+                >
+                  <div className="aspect-video w-full bg-slate-200 overflow-hidden shrink-0">
+                     {item.GambarURL ? (
+                       <img src={item.GambarURL} alt={item.Judul} className="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
+                     ) : (
+                       <div className="w-full h-full flex items-center justify-center text-slate-400 bg-slate-100">
+                          <span className="text-sm font-semibold uppercase tracking-wider">Tanpa Gambar</span>
+                       </div>
+                     )}
                   </div>
-                  <h3 className="text-xl font-bold text-slate-900 mb-3 leading-snug line-clamp-2">{item.Judul}</h3>
-                  <p className="text-slate-600 line-clamp-3 mb-6 flex-1">{item.Konten}</p>
-                  <span className="text-indigo-600 font-bold text-sm flex items-center gap-1 mt-auto">
-                    Baca selengkapnya &rarr;
-                  </span>
+                  <div className="p-6 flex flex-col flex-1">
+                    <div className="flex items-center gap-2 text-xs text-indigo-600 font-bold uppercase tracking-wider mb-3">
+                      <CalendarDays size={14} />
+                      {new Date(item.Tanggal).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' })}
+                    </div>
+                    <h3 className="text-xl font-bold text-slate-900 mb-3 leading-snug line-clamp-2">{item.Judul}</h3>
+                    <p className="text-slate-600 line-clamp-3 mb-6 flex-1">{item.Konten}</p>
+                    <span className="text-indigo-600 font-bold text-sm flex items-center gap-1 mt-auto">
+                      Baca selengkapnya &rarr;
+                    </span>
+                  </div>
                 </div>
+              ))}
+            </div>
+
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+              <div className="flex justify-center items-center gap-4">
+                <button
+                  onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                  disabled={currentPage === 1}
+                  className="p-2 rounded-xl bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-indigo-600 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <ChevronLeft size={20} />
+                </button>
+                <div className="flex gap-2">
+                  {Array.from({ length: totalPages }).map((_, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setCurrentPage(i + 1)}
+                      className={`w-10 h-10 rounded-xl font-bold transition flex items-center justify-center
+                        ${currentPage === i + 1 
+                          ? 'bg-indigo-600 text-white shadow-md' 
+                          : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-indigo-600'
+                        }`}
+                    >
+                      {i + 1}
+                    </button>
+                  ))}
+                </div>
+                <button
+                  onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                  disabled={currentPage === totalPages}
+                  className="p-2 rounded-xl bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-indigo-600 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <ChevronRight size={20} />
+                </button>
               </div>
-            ))}
-          </div>
+            )}
+          </>
         )}
       </div>
     </div>

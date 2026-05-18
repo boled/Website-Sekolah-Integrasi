@@ -269,35 +269,33 @@ function doPost(e) {
       const sheet = ss.getSheetByName(sheetName);
       
       if (action === 'save_data') {
+        if (!payload.ID && !payload.id) {
+          payload.ID = Utilities.getUuid();
+        }
         const updateId = payload.ID || payload.id;
-        if (updateId) {
-          // Update existing row
-          const values = sheet.getDataRange().getValues();
-          let rowIndex = -1;
-          for (let i = 1; i < values.length; i++) {
-             if (values[i][0] == updateId) {
-               rowIndex = i + 1;
-               break;
-             }
-          }
-          if (rowIndex > -1) {
-             const headers = values[0];
-             const rowData = headers.map(h => payload[h] !== undefined ? payload[h] : values[rowIndex-1][headers.indexOf(h)]);
-             sheet.getRange(rowIndex, 1, 1, rowData.length).setValues([rowData]);
-          } else {
-             const headers = values[0];
-             const rowData = headers.map(h => payload[h] !== undefined ? payload[h] : '');
-             sheet.appendRow(rowData);
-          }
+        
+        const values = sheet.getDataRange().getValues();
+        let rowIndex = -1;
+        for (let i = 1; i < values.length; i++) {
+           if (values[i][0] == updateId) {
+             rowIndex = i + 1;
+             break;
+           }
+        }
+
+        if (rowIndex > -1) {
+           // Update existing row
+           const headers = values[0];
+           const rowData = headers.map(h => payload[h] !== undefined ? payload[h] : values[rowIndex-1][headers.indexOf(h)]);
+           sheet.getRange(rowIndex, 1, 1, rowData.length).setValues([rowData]);
         } else {
-          // Add new row
-          payload.ID = generateId(); 
-          if (type === 'news' && !payload.Tanggal) payload.Tanggal = new Date().toISOString();
-          if (type === 'ppdb' && !payload.WaktuPendaftar) payload.WaktuPendaftar = new Date().toISOString();
-          
-          const headers = sheet.getDataRange().getValues()[0];
-          const rowData = headers.map(h => payload[h] !== undefined ? payload[h] : '');
-          sheet.appendRow(rowData);
+           // Add new row
+           if (type === 'news' && !payload.Tanggal) payload.Tanggal = new Date().toISOString();
+           if (type === 'ppdb' && !payload.WaktuPendaftar) payload.WaktuPendaftar = new Date().toISOString();
+           
+           const headers = values[0];
+           const rowData = headers.map(h => payload[h] !== undefined ? payload[h] : '');
+           sheet.appendRow(rowData);
         }
         return ContentService.createTextOutput(JSON.stringify({ status: 'success', message: 'Data berhasil disimpan' }))
           .setMimeType(ContentService.MimeType.JSON);
